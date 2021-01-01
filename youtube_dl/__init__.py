@@ -342,6 +342,7 @@ def _real_main(argv=None):
         'format': opts.format,
         'listformats': opts.listformats,
         'outtmpl': outtmpl,
+        'split_tracks_output': opts.split_tracks_output,
         'autonumber_size': opts.autonumber_size,
         'autonumber_start': opts.autonumber_start,
         'restrictfilenames': opts.restrictfilenames,
