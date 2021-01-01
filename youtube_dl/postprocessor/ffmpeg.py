@@ -723,4 +723,4 @@ class FFmpegSplitByTracksPP(FFmpegPostProcessor):
             except Exception as e:
                 self.log.error('Splitting track failed: ' + repr(e))
 
-        return [], information
+        return [information['filepath']], information
