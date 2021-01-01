@@ -688,8 +688,27 @@ class FFmpegSplitByTracksPP(FFmpegPostProcessor):
         start = self._ffmpeg_time_string(start)
         duration = self._ffmpeg_time_string(duration)
 
-        destination = self._build_track_name(chapter, information)
+        destination = self._build_track_name(idx, chapter, information)
 
+        # this is copied from YoutubeDL.py#1777
+        # TODO some refactoring so we can remove it here and it's in a central location
+        def ensure_dir_exists(path):
+            try:
+                dn = os.path.dirname(path)
+                if dn and not os.path.exists(dn):
+                    os.makedirs(dn)
+                return True
+            except (OSError, IOError) as err:
+                self.report_error('unable to create directory ' + error_to_compat_str(err))
+                return False
+
+        if not ensure_dir_exists(sanitize_path(encodeFilename(destination))):
+            return
+
+
+        self._downloader.to_screen('[split-tracks] Destination: ' + destination)
+        # this doesn't honor -w, --no-overwrite
+        # TODO honor -w
         self.run_ffmpeg(information['filepath'], destination, ['-c', 'copy', '-ss', start, '-t', duration])
 
     def run(self, information):
