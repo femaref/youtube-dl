@@ -6,6 +6,7 @@ import os
 import subprocess
 import time
 import re
+import copy
 
 
 from .common import AudioConversionError, PostProcessor
@@ -13,6 +14,7 @@ from .common import AudioConversionError, PostProcessor
 from ..utils import (
     encodeArgument,
     encodeFilename,
+    sanitize_path,
     get_exe_version,
     is_outdated_version,
     PostProcessingError,
@@ -657,6 +659,7 @@ class FFmpegSubtitlesConvertorPP(FFmpegPostProcessor):
 
         return sub_filenames, info
 
+DEFAULT_SPLIT_TRACKS_OUTPUT = "%(title)s - %(chapter_number)03d - %(chapter)s.%(ext)s"
 
 class FFmpegSplitByTracksPP(FFmpegPostProcessor):
     log = logging.getLogger(__name__)
@@ -667,17 +670,17 @@ class FFmpegSplitByTracksPP(FFmpegPostProcessor):
         t_string = '{hrs:02}:{min:02}:{sec:02}'.format(hrs=t_hours, min=t_minutes, sec=t_seconds)
         return t_string
 
-    def _build_track_name(self, chapter, information):
-        track_title = chapter.get("title", "")
-        track_title = encodeFilename(track_title)
-        track_title = track_title.replace("/", "_")
+    def _build_track_name(self, idx, chapter, information):
+        tmpl = self._downloader.params.get('split_tracks_output', DEFAULT_SPLIT_TRACKS_OUTPUT)
 
-        prefix, sep, ext = information['filepath'].rpartition('.')
-        track_name = "%s - %s%s%s" % (prefix, track_title, sep, ext)
+        track_information = copy.deepcopy(information)
 
-        return track_name
+        track_information['chapter_number'] = idx + 1
+        track_information['chapter'] = chapter['title'] or ''
 
-    def _extract_track_from_chapter(self, chapter, information):
+        return self._downloader._prepare_filename(tmpl, track_information)
+
+    def _extract_track_from_chapter(self, idx, chapter, information):
         start = int(chapter['start_time'])
         end = int(chapter['end_time'])
         duration = end - start
