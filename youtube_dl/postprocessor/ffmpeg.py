@@ -719,7 +719,7 @@ class FFmpegSplitByTracksPP(FFmpegPostProcessor):
 
         for idx, chapter in enumerate(chapters):
             try:
-                self._extract_track_from_chapter(chapter, information)
+                self._extract_track_from_chapter(idx, chapter, information)
             except Exception as e:
                 self.log.error('Splitting track failed: ' + repr(e))
 
