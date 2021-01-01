@@ -525,11 +525,6 @@ def parseOpts(overrideArguments=None):
         '--external-downloader-args',
         dest='external_downloader_args', metavar='ARGS',
         help='Give these arguments to the external downloader')
-    downloader.add_option(
-        '--split-tracks',
-        dest='split_tracks', action='store_true', default=False,
-        help="Split tracks based on chapters information"
-    )
 
     workarounds = optparse.OptionGroup(parser, 'Workarounds')
     workarounds.add_option(
@@ -863,6 +858,15 @@ def parseOpts(overrideArguments=None):
         '--convert-subs', '--convert-subtitles',
         metavar='FORMAT', dest='convertsubtitles', default=None,
         help='Convert the subtitles to other format (currently supported: srt|ass|vtt|lrc)')
+    postproc.add_option(
+        '--split-tracks',
+        dest='split_tracks', action='store_true', default=False,
+        help="Split tracks based on chapters information"
+    )
+    postproc.add_option(
+        '--split-tracks-output',
+        dest='split_tracks_output', metavar='TEMPLATE',
+        help=('Output filename template, see the "OUTPUT TEMPLATE" for all the info'))
 
     parser.add_option_group(general)
     parser.add_option_group(network)
