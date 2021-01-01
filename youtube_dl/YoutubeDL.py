@@ -633,6 +633,12 @@ class YoutubeDL(object):
 
     def prepare_filename(self, info_dict):
         """Generate the output filename."""
+        outtmpl = self.params.get('outtmpl', DEFAULT_OUTTMPL)
+
+        return self._prepare_filename(outtmpl, info_dict)
+
+    def _prepare_filename(self, outtmpl, info_dict):
+        """Generate a file name based on the outtmpl and info provided."""
         try:
             template_dict = dict(info_dict)
 
@@ -657,8 +663,6 @@ class YoutubeDL(object):
                                  for k, v in template_dict.items()
                                  if v is not None and not isinstance(v, (list, tuple, dict)))
             template_dict = collections.defaultdict(lambda: 'NA', template_dict)
-
-            outtmpl = self.params.get('outtmpl', DEFAULT_OUTTMPL)
 
             # For fields playlist_index and autonumber convert all occurrences
             # of %(field)s to %(field)0Nd for backward compatibility
