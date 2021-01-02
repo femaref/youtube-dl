@@ -335,6 +335,10 @@ class FFmpegExtractAudioPP(FFmpegPostProcessor):
             return [], information
 
         try:
+            if self._downloader.params.get('nooverwrites', False) and os.path.exists(new_path):
+                self._downloader.to_screen('[ffmpeg] destination %s already present' % new_path)
+                return [], information
+
             self._downloader.to_screen('[ffmpeg] Destination: ' + new_path)
             self.run_ffmpeg(path, new_path, acodec, more_opts)
         except AudioConversionError as e:
