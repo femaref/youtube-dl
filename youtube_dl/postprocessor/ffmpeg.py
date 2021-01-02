@@ -697,16 +697,17 @@ class FFmpegSplitByTracksPP(FFmpegPostProcessor):
         if not self._downloader._ensure_dir_exists(destination):
             return
 
+        if self._downloader.params.get('nooverwrites', False) and os.path.exists(destination):
+            self._downloader.to_screen('[split-tracks] destination %s already present' % destination)
+            return
 
         self._downloader.to_screen('[split-tracks] Destination: ' + destination)
-        # this doesn't honor -w, --no-overwrite
-        # TODO honor -w
         self.run_ffmpeg(information['filepath'], destination, ['-c', 'copy', '-ss', start, '-t', duration])
 
     def run(self, information):
         chapters = information.get('chapters', [])
         if not isinstance(chapters, list) or len(chapters) == 0:
-            self.log.warning('[ffmpeg] There are no tracks to extract')
+            self.log.warning('[split-tracks] There are no tracks to extract')
             return [], information
 
         for idx, chapter in enumerate(chapters):
