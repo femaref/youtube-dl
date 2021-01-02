@@ -675,14 +675,14 @@ class FFmpegSplitByTracksPP(FFmpegPostProcessor):
         return t_string
 
     def _build_track_name(self, idx, chapter, information):
-        tmpl = self._downloader.params.get('split_tracks_output', DEFAULT_SPLIT_TRACKS_OUTPUT)
+        tmpl = self._downloader.params.get('split_tracks_output', None)
+        if tmpl is None:
+            tmpl = DEFAULT_SPLIT_TRACKS_OUTPUT
 
-        track_information = copy.deepcopy(information)
+        information['chapter_number'] = idx + 1
+        information['chapter'] = chapter['title'] or ''
 
-        track_information['chapter_number'] = idx + 1
-        track_information['chapter'] = chapter['title'] or ''
-
-        return self._downloader._prepare_filename(tmpl, track_information)
+        return self._downloader._prepare_filename(tmpl, information)
 
     def _extract_track_from_chapter(self, idx, chapter, information):
         start = int(chapter['start_time'])
