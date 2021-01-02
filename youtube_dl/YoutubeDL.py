@@ -1739,6 +1739,19 @@ class YoutubeDL(object):
         if self.params.get('forcejson', False):
             self.to_stdout(json.dumps(info_dict))
 
+    def _ensure_dir_exists(self, path):
+        try:
+            dn = os.path.dirname(path)
+            if dn and not os.path.exists(dn):
+                os.makedirs(dn)
+            return True
+        except (OSError, IOError) as err:
+            self.report_error('unable to create directory ' + error_to_compat_str(err))
+            return False
+
+    def _sanitized_ensure_dir_exists(self, filename):
+        return self._ensure_dir_exists(sanitize_path(encodeFilename(filename)))
+
     def process_info(self, info_dict):
         """Process a single resolved IE result."""
 
@@ -1774,17 +1787,7 @@ class YoutubeDL(object):
         if filename is None:
             return
 
-        def ensure_dir_exists(path):
-            try:
-                dn = os.path.dirname(path)
-                if dn and not os.path.exists(dn):
-                    os.makedirs(dn)
-                return True
-            except (OSError, IOError) as err:
-                self.report_error('unable to create directory ' + error_to_compat_str(err))
-                return False
-
-        if not ensure_dir_exists(sanitize_path(encodeFilename(filename))):
+        if not self._sanitized_ensure_dir_exists(filename):
             return
 
         if self.params.get('writedescription', False):
