@@ -4119,6 +4119,7 @@ def qualities(quality_ids):
 
 
 DEFAULT_OUTTMPL = '%(title)s-%(id)s.%(ext)s'
+DEFAULT_SPLIT_TRACKS_OUTPUT = "%(title)s - %(chapter_number)03d - %(chapter)s.%(ext)s"
 
 
 def limit_length(s, length):

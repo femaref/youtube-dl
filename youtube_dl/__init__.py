@@ -24,6 +24,7 @@ from .utils import (
     DateRange,
     decodeOption,
     DEFAULT_OUTTMPL,
+    DEFAULT_SPLIT_TRACKS_OUTPUT,
     DownloadError,
     expand_path,
     match_filter_func,
@@ -243,6 +244,9 @@ def _real_main(argv=None):
                      ' file! Use "{0}.%(ext)s" instead of "{0}" as the output'
                      ' template'.format(outtmpl))
 
+    split_tracks_output = ((opts.split_tracks_output is not None and opts.split_tracks_output)
+                            or DEFAULT_SPLIT_TRACKS_OUTPUT)
+
     any_getting = opts.geturl or opts.gettitle or opts.getid or opts.getthumbnail or opts.getdescription or opts.getfilename or opts.getformat or opts.getduration or opts.dumpjson or opts.dump_single_json
     any_printing = opts.print_json
     download_archive_fn = expand_path(opts.download_archive) if opts.download_archive is not None else opts.download_archive
@@ -342,7 +346,7 @@ def _real_main(argv=None):
         'format': opts.format,
         'listformats': opts.listformats,
         'outtmpl': outtmpl,
-        'split_tracks_output': opts.split_tracks_output,
+        'split_tracks_output': split_tracks_output,
         'autonumber_size': opts.autonumber_size,
         'autonumber_start': opts.autonumber_start,
         'restrictfilenames': opts.restrictfilenames,

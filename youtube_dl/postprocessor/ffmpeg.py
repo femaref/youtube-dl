@@ -24,6 +24,7 @@ from ..utils import (
     dfxp2srt,
     ISO639Utils,
     replace_extension,
+    DEFAULT_SPLIT_TRACKS_OUTPUT
 )
 
 
@@ -663,8 +664,6 @@ class FFmpegSubtitlesConvertorPP(FFmpegPostProcessor):
 
         return sub_filenames, info
 
-DEFAULT_SPLIT_TRACKS_OUTPUT = "%(title)s - %(chapter_number)03d - %(chapter)s.%(ext)s"
-
 class FFmpegSplitByTracksPP(FFmpegPostProcessor):
     log = logging.getLogger(__name__)
 
@@ -675,9 +674,7 @@ class FFmpegSplitByTracksPP(FFmpegPostProcessor):
         return t_string
 
     def _build_track_name(self, idx, chapter, information):
-        tmpl = self._downloader.params.get('split_tracks_output', None)
-        if tmpl is None:
-            tmpl = DEFAULT_SPLIT_TRACKS_OUTPUT
+        tmpl = self._downloader.params.get('split_tracks_output', DEFAULT_SPLIT_TRACKS_OUTPUT)
 
         information['chapter_number'] = idx + 1
         information['chapter'] = chapter['title'] or ''
