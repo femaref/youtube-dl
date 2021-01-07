@@ -1931,7 +1931,7 @@ class YoutubeDL(object):
                             fname = prepend_extension(
                                 self.prepare_filename(new_info),
                                 'f%s' % f['format_id'], new_info['ext'])
-                            if not ensure_dir_exists(fname):
+                            if not self._ensure_dir_exists(fname):
                                 return
                             downloaded.append(fname)
                             partial_success = dl(fname, new_info)
